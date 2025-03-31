@@ -48,7 +48,7 @@ public class EnderPearl : XRGrabInteractable
         GameObject xrOrigin = GameObject.FindWithTag("Player"); // Ensure XR Origin has the "Player" tag
         if (xrOrigin != null)
         {
-            Vector3 teleportPosition = targetPosition + Vector3.up * 1.05f;
+            Vector3 teleportPosition = targetPosition + Vector3.up * 0.5f;
 
             // Play teleport effect at destination
             if (teleportEffectPrefab)
