@@ -467,31 +467,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f43e9665fa15642aeb014068f3d64b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpAction:
-    m_UseReference: 0
-    m_Action:
-      m_Name: Jump
-      m_Type: 0
-      m_ExpectedControlType: 
-      m_Id: a9840002-5d89-4fca-adeb-3c76b1eb91ee
-      m_Processors: 
-      m_Interactions: 
-      m_SingletonActionBindings:
-      - m_Name: 
-        m_Id: ed822617-87ba-4d51-baae-45b47b5b7298
-        m_Path: <XRController>{RightHand}/triggerButton
-        m_Interactions: 
-        m_Processors: 
-        m_Groups: 
-        m_Action: Jump
-        m_Flags: 0
-      m_Flags: 0
-    m_Reference: {fileID: 0}
-  jumpHeight: 1.5
-  gravity: -9.81
-  characterController: {fileID: 0}
-  verticalVelocity: 0
-  isGrounded: 0
 --- !u!4 &741765941 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 109434732395451517, guid: 65847589f926b734d9eaed6e25f0046b, type: 3}
@@ -635,6 +610,7 @@ GameObject:
   - component: {fileID: 1626675326}
   - component: {fileID: 1626675325}
   - component: {fileID: 1626675330}
+  - component: {fileID: 1626675331}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -713,7 +689,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: b66d93473ec460b49adc5e809aa95aac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -881,6 +857,20 @@ MonoBehaviour:
   m_AddDefaultGrabTransformers: 1
   m_FarAttachMode: 0
   teleportEffectPrefab: {fileID: 0}
+--- !u!114 &1626675331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626675323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dff75071de6d284f996d6107b998bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  suspendPoint: {fileID: 305015562}
+  objectPrefab: {fileID: 0}
 --- !u!1 &1782642572 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}

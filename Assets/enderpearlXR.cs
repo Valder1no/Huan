@@ -31,7 +31,6 @@ public class EnderPearl : XRGrabInteractable
         {
             rb.isKinematic = false;
             rb.useGravity = true;
-            rb.AddForce(transform.forward * 10f, ForceMode.Impulse); // Adjust throw force
         }
     }
 
@@ -49,7 +48,7 @@ public class EnderPearl : XRGrabInteractable
         GameObject xrOrigin = GameObject.FindWithTag("Player"); // Ensure XR Origin has the "Player" tag
         if (xrOrigin != null)
         {
-            Vector3 teleportPosition = targetPosition + Vector3.up * 1; // Raise slightly to avoid clipping
+            Vector3 teleportPosition = targetPosition + Vector3.up * 1.05f;
 
             // Play teleport effect at destination
             if (teleportEffectPrefab)
