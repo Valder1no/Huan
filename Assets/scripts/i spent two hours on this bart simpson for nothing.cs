@@ -1,58 +1,67 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // For input handling
-using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR;
+using System.Collections.Generic;
 
-public class ShootObjectOnButtonPress : MonoBehaviour
+public class SphereLauncher : MonoBehaviour
 {
-    // The object prefab to shoot
-    public GameObject objectToShoot;
+    public GameObject cloneSpherePrefab;  // The prefab for the sphere (assigned in the Inspector)
+    public float launchForce = 10f;      // Force with which the sphere is launched
+    public float despawnTime = 5f;       // Time (in seconds) after which the sphere will despawn
 
-    // The transform from which the object will be shot
-    public Transform shootFromTransform;
+    private Camera mainCamera;
+    private InputDevice rightController;
 
-    // The force with which the object will be shot
-    public float shootForce = 10f;
-
-    // The input action that triggers the shooting (this can be mapped in Unity's Input System)
-    public InputActionProperty shootButtonAction;
-
-    private void OnEnable()
+    void Start()
     {
-        // Enable the input action
-        shootButtonAction.action.Enable();
+        mainCamera = Camera.main;
+        InitializeRightController();
     }
 
-    private void OnDisable()
+    void InitializeRightController()
     {
-        // Disable the input action
-        shootButtonAction.action.Disable();
-    }
+        var rightHandedControllers = new List<InputDevice>();
+        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller, rightHandedControllers);
 
-    private void Update()
-    {
-        // Check if the button is pressed
-        if (shootButtonAction.action.triggered)
+        if (rightHandedControllers.Count > 0)
         {
-            ShootObject();
+            rightController = rightHandedControllers[0];
+        }
+        else
+        {
+            Debug.LogError("Right controller not found.");
         }
     }
 
-    private void ShootObject()
+    void Update()
     {
-        if (objectToShoot && shootFromTransform)
+        if (rightController.isValid)
         {
-            // Instantiate the object to shoot at the specified transform
-            GameObject projectile = Instantiate(objectToShoot, shootFromTransform.position, shootFromTransform.rotation);
-
-            // Add force to the projectile to make it move (e.g., shoot it forward)
-            Rigidbody rb = projectile.GetComponent<Rigidbody>();
-            if (rb != null)
+            bool triggerValue;
+            if (rightController.TryGetFeatureValue(CommonUsages.triggerButton, out triggerValue) && triggerValue)
             {
-                rb.AddForce(shootFromTransform.forward * shootForce, ForceMode.VelocityChange);
+                LaunchSphere();
             }
-
-            // Optional: Destroy the object after a short delay to avoid clutter
-            Destroy(projectile, 5f); // Destroy after 5 seconds
         }
+        else
+        {
+            InitializeRightController(); // Re-initialize if the controller becomes invalid
+        }
+    }
+
+    void LaunchSphere()
+    {
+        // Create the cloned sphere at a position in front of the camera
+        Vector3 spawnPosition = mainCamera.transform.position + mainCamera.transform.forward * 2f;
+        GameObject clonedSphere = Instantiate(cloneSpherePrefab, spawnPosition, Quaternion.identity);
+
+        // Apply a force in the direction the camera is facing
+        Rigidbody rb = clonedSphere.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.AddForce(mainCamera.transform.forward * launchForce, ForceMode.VelocityChange);
+        }
+
+        // Destroy the cloned sphere after the specified despawn time
+        Destroy(clonedSphere, despawnTime);
     }
 }
