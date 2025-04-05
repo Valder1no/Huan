@@ -9,12 +9,18 @@ public class SuspendUntilGrabbed : MonoBehaviour
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private bool isGrabbed = false;
 
+    public bool IsGrabbed { get => isGrabbed; set => isGrabbed = value; }
+
+    public SuspendUntilGrabbed(bool isGrabbed)
+    {
+        this.isGrabbed = isGrabbed;
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
 
-        if (grabInteractable == null)
+        if (!TryGetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>(out grabInteractable))
         {
             Debug.LogError("XRGrabInteractable component is required but missing.", this);
             return;
@@ -30,8 +36,7 @@ public class SuspendUntilGrabbed : MonoBehaviour
         if (rb != null)
         {
             rb.isKinematic = true;
-            transform.position = suspendPoint.position;
-            transform.rotation = suspendPoint.rotation;
+            transform.SetPositionAndRotation(suspendPoint.position, suspendPoint.rotation);
         }
     }
 
