@@ -20,7 +20,7 @@ public class SphereLauncher : MonoBehaviour
     void InitializeRightController()
     {
         var rightHandedControllers = new List<InputDevice>();
-        InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller, rightHandedControllers);
+        InputDevices.GetDevicesWithRole(InputDeviceRole.RightHanded, rightHandedControllers);
 
         if (rightHandedControllers.Count > 0)
         {
@@ -31,6 +31,7 @@ public class SphereLauncher : MonoBehaviour
             Debug.LogError("Right controller not found.");
         }
     }
+
 
     void Update()
     {
