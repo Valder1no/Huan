@@ -101,12 +101,13 @@ public class EnemyAiTutorial : MonoBehaviour
         if (!walkPointSet) SearchWalkPoint();
 
         if (walkPointSet)
+            GetComponent<NavMeshAgent>().speed = 1.6f;
             agent.SetDestination(walkPoint);
 
         Vector3 distanceToWalkPoint = transform.position - walkPoint;
 
         //Walkpoint reached
-        if (distanceToWalkPoint.magnitude < 1f)
+        if (distanceToWalkPoint.magnitude < 2.5f)
             walkPointSet = false;
     }
     private void SearchWalkPoint()
@@ -126,6 +127,7 @@ public class EnemyAiTutorial : MonoBehaviour
 
     private void ChasePlayer()
     {
+        GetComponent<NavMeshAgent>().speed = 4f;
         agent.SetDestination(player.position);
     }
 
