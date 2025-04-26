@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 200f;
+    public float speed = 40f;
     public int damage = 10;
 
     private Transform target;
@@ -13,16 +13,16 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindWithTag("Player").transform; // Find the player dynamically
+        player = GameObject.FindWithTag("Player").transform;
 
         if (player != null)
         {
-            Vector3 direction = player.position - transform.position; // Calculate direction
-            transform.rotation = Quaternion.LookRotation(direction); // Rotate towards player
+            Vector3 direction = player.position - transform.position;
+            transform.rotation = Quaternion.LookRotation(direction);
         }
         else
         {
-            Debug.LogError("wtf why not work?");
+            Debug.LogError("player is null");
         }
     }
 
