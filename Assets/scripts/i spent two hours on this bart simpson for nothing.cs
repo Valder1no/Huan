@@ -26,10 +26,6 @@ public class SphereLauncher : MonoBehaviour
         {
             rightController = rightHandedControllers[0];
         }
-        else
-        {
-            Debug.LogError("Right controller not found.");
-        }
     }
 
 
