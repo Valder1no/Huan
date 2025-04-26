@@ -404,6 +404,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1187933228}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1723527998}
     - targetCorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1782642577}
@@ -552,6 +555,7 @@ GameObject:
   - component: {fileID: 1626675325}
   - component: {fileID: 1626675330}
   - component: {fileID: 1626675331}
+  - component: {fileID: 1626675332}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -684,7 +688,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1626675323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74b716d433c774341a8623f69e66c8b3, type: 3}
+  m_Script: {fileID: 11500000, guid: ec29bb1aeb08765458fbe4f01b7e92e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 3127728407676174906}
@@ -751,7 +755,7 @@ MonoBehaviour:
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
-  m_MatchAttachRotation: 1
+  m_MatchAttachRotation: 0
   m_SnapToColliderVolume: 1
   m_ReinitializeDynamicAttachEverySingleGrab: 1
   m_AttachEaseInTime: 0.15
@@ -797,7 +801,7 @@ MonoBehaviour:
   m_StartingMultipleGrabTransformers: []
   m_AddDefaultGrabTransformers: 1
   m_FarAttachMode: 0
-  teleportEffectPrefab: {fileID: 0}
+  stayTransform: {fileID: 1718994103}
 --- !u!114 &1626675331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -807,16 +811,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 1626675323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dff75071de6d284f996d6107b998bd8, type: 3}
+  m_Script: {fileID: 11500000, guid: c2b90ce49c949d74f8ed9b41f257006d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  suspendPoint: {fileID: 1718994103}
-  objectPrefab: {fileID: 1626675323}
+  throwPower: 10
+--- !u!114 &1626675332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626675323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de62e2f340ea80e45ba1e2459a4be5bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aButtonAction: {fileID: 0}
 --- !u!4 &1718994103 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5674936132871724947, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 667377796}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1723527991 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 667377796}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1723527998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1723527991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b6e381c0449be41937aa2fd6409895, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pullSpeed: 2
 --- !u!1 &1782642572 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
