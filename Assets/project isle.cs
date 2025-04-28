@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit; // For grabbing reset (optional)
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 public class PlantProjectile : MonoBehaviour
 {
@@ -9,15 +10,12 @@ public class PlantProjectile : MonoBehaviour
     private Rigidbody rb;
     private bool hasLanded = false;
 
-    [Header("Throw Settings")]
-    public float throwPower = 10f; // Configurable throw force in Inspector
-
-    private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
+    private XRGrabInteractable grabInteractable;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        grabInteractable = GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        grabInteractable = GetComponent<XRGrabInteractable>();
 
         if (grabInteractable != null)
         {
@@ -33,29 +31,19 @@ public class PlantProjectile : MonoBehaviour
         }
     }
 
-    public void Throw(Vector3 direction)
-    {
-        if (rb == null) rb = GetComponent<Rigidbody>();
-
-        hasLanded = false;
-        rb.isKinematic = false;
-        rb.linearVelocity = Vector3.zero; // Reset velocity
-        rb.AddForce(direction.normalized * throwPower, ForceMode.VelocityChange);
-    }
-
     void OnCollisionEnter(Collision collision)
     {
         if (hasLanded) return;
 
         hasLanded = true;
-        rb.isKinematic = true; // Freeze when landed
+        rb.isKinematic = true; // Freeze physics when landed
 
-        OnPlantLanded?.Invoke(transform.position); // Tell puller
+        OnPlantLanded?.Invoke(transform.position); // Notify listeners
     }
 
     private void OnGrabbed(SelectEnterEventArgs args)
     {
-        rb.isKinematic = false; // Allow physics again
-        hasLanded = false; // Reset so landing works again
+        rb.isKinematic = false; // Allow physics again when grabbed
+        hasLanded = false; // Reset landing state
     }
 }
