@@ -7,6 +7,7 @@ public class SphereLauncher : MonoBehaviour
     public GameObject cloneSpherePrefab;  // The prefab for the sphere (assigned in the Inspector)
     public float launchForce = 10f;      // Force with which the sphere is launched
     public float despawnTime = 5f;       // Time (in seconds) after which the sphere will despawn
+    public GameObject sigmaboy;
 
     private Camera mainCamera;
     private InputDevice rightController;
@@ -48,14 +49,14 @@ public class SphereLauncher : MonoBehaviour
     void LaunchSphere()
     {
         // Create the cloned sphere at a position in front of the camera
-        Vector3 spawnPosition = mainCamera.transform.position + mainCamera.transform.forward * 2f;
+        Vector3 spawnPosition = sigmaboy.transform.position + sigmaboy.transform.forward * 0.1f;
         GameObject clonedSphere = Instantiate(cloneSpherePrefab, spawnPosition, Quaternion.identity);
 
         // Apply a force in the direction the camera is facing
         Rigidbody rb = clonedSphere.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.AddForce(mainCamera.transform.forward * launchForce, ForceMode.VelocityChange);
+            rb.AddForce(sigmaboy.transform.forward * launchForce, ForceMode.VelocityChange);
         }
 
         // Destroy the cloned sphere after the specified despawn time

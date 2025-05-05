@@ -846,6 +846,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!1 &1032933417 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1670256624, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+  m_PrefabInstance: {fileID: 9014170783777442263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1074380178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1530,8 +1535,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cloneSpherePrefab: {fileID: 7759133523529280764, guid: 003597d1c3f58d84faf248349407a3f5, type: 3}
-  launchForce: 2
+  launchForce: 40
   despawnTime: 200090910
+  sigmaboy: {fileID: 1032933417}
 --- !u!4 &1954547852
 Transform:
   m_ObjectHideFlags: 0
