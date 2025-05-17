@@ -4,6 +4,7 @@ public class ObjectMover : MonoBehaviour
 {
     public GameObject objectToMove;        // The object you want to move
     public float moveSpeed = 5f;           // The speed at which the object will move
+    public GameObject projectile;
 
     private Camera mainCamera;             // Camera to use for raycasting (in case of VR, you'd track controller directly)
     
@@ -55,4 +56,6 @@ public class ObjectMover : MonoBehaviour
         // Smoothly move the object towards the target position
         objectToMove.transform.position = Vector3.MoveTowards(objectToMove.transform.position, targetPosition, moveSpeed * Time.deltaTime);
     }
+
+
 }
