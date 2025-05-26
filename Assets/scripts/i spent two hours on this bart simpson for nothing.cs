@@ -9,6 +9,7 @@ public class SphereLauncher : MonoBehaviour
     public float despawnTime;       // Time (in seconds) after which the sphere will despawn
     public GameObject sigmaboy;
 
+    public GameObject flameEffectPrefab;
 
     private Camera mainCamera;
     private InputDevice rightController;
@@ -49,25 +50,22 @@ public class SphereLauncher : MonoBehaviour
     void LaunchSphere()
     {
         float launchForce = Random.Range(9f, 14f);
-        // Create the cloned sphere at a position in front of the camera
         Vector3 spawnPosition = sigmaboy.transform.position + sigmaboy.transform.forward * 0.1f;
+
         GameObject clonedSphere = Instantiate(cloneSpherePrefab, spawnPosition, Quaternion.identity);
 
-        // Apply a force in the direction the camera is facing
         Rigidbody rb = clonedSphere.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.AddForce(sigmaboy.transform.forward * launchForce, ForceMode.VelocityChange);
         }
 
-        // Destroy the cloned sphere after the specified despawn time
-         Destroy(clonedSphere, despawnTime = Random.Range(0.5f, 0.9f));
+        // Fire visual effect
+        Quaternion flameRotation = Quaternion.LookRotation(sigmaboy.transform.forward);
+        GameObject flameEffect = Instantiate(flameEffectPrefab, spawnPosition, flameRotation);
 
-        void OnCollisionEnter(Collision collision)
-        {
-
-                Destroy(clonedSphere);
-
-        }
+        flameEffect.transform.parent = clonedSphere.transform; // Optional
+        Destroy(flameEffect, 1.5f);
+        Destroy(clonedSphere, despawnTime = Random.Range(0.5f, 0.9f));
     }
 }
