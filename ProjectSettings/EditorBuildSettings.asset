@@ -5,9 +5,12 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/main scene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    guid: 97c0bef922c083343bac4e077fb8dc1f
+  - enabled: 1
+    path: Assets/Scenes/Andzelo.unity
+    guid: ac5835482b8fa5844b17e0f5aaf8ced7
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 9281091c443e2734fa13f62037b8f0b0, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
