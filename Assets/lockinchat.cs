@@ -2,56 +2,78 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
-[RequireComponent(typeof(XRGrabInteractable))]
-public class LockOnTarget : MonoBehaviour
+public class HipSlotStorage : MonoBehaviour
 {
-    [Header("Lock-On Settings")]
-    public Transform lockTarget;               // The transform to lock onto
-    public float lockOnDistance = 0.1f;        // Distance threshold to lock on
+    [Header("Hip Slot Settings")]
+    public Transform hipSlotTransform;
+    public float snapDistance = 0.3f;
 
+    private GameObject storedObject;
     private XRGrabInteractable grabInteractable;
-    private bool isLockedOn = false;
-    private bool isGrabbed = false;
 
-    private void Awake()
+    private void OnTriggerEnter(Collider other)
     {
-        grabInteractable = GetComponent<XRGrabInteractable>();
-        grabInteractable.selectEntered.AddListener(OnGrab);
-        grabInteractable.selectExited.AddListener(OnRelease);
-    }
+        if (storedObject != null) return; // Only one object at a time
 
-    private void OnDestroy()
-    {
-        grabInteractable.selectEntered.RemoveListener(OnGrab);
-        grabInteractable.selectExited.RemoveListener(OnRelease);
-    }
-
-    private void Update()
-    {
-        if (!isGrabbed && !isLockedOn && Vector3.Distance(transform.position, lockTarget.position) <= lockOnDistance)
+        XRGrabInteractable interactable = other.GetComponent<XRGrabInteractable>();
+        if (interactable != null && !interactable.isSelected)
         {
-            LockToTarget();
-        }
-        else if (isGrabbed && isLockedOn)
-        {
-            isLockedOn = false;
+            float distance = Vector3.Distance(interactable.transform.position, hipSlotTransform.position);
+            if (distance <= snapDistance)
+            {
+                StoreObject(interactable);
+            }
         }
     }
 
-    private void LockToTarget()
+    private void StoreObject(XRGrabInteractable interactable)
     {
-        transform.position = lockTarget.position;
-        transform.rotation = lockTarget.rotation;
-        isLockedOn = true;
+        storedObject = interactable.gameObject;
+        grabInteractable = interactable;
+
+        storedObject.transform.SetParent(hipSlotTransform);
+        storedObject.transform.localPosition = Vector3.zero;
+        storedObject.transform.localRotation = Quaternion.identity;
+
+        // Disable physics
+        Rigidbody rb = storedObject.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        // Listen for grab
+        grabInteractable.selectEntered.AddListener(OnObjectGrabbed);
     }
 
-    private void OnGrab(SelectEnterEventArgs args)
+    private void OnObjectGrabbed(SelectEnterEventArgs args)
     {
-        isGrabbed = true;
+        if (storedObject == null) return;
+
+        grabInteractable.selectEntered.RemoveListener(OnObjectGrabbed);
+
+        // Detach
+        storedObject.transform.SetParent(null);
+
+        // Re-enable physics
+        Rigidbody rb = storedObject.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+        }
+
+        storedObject = null;
+        grabInteractable = null;
     }
 
-    private void OnRelease(SelectExitEventArgs args)
+    private void OnDrawGizmosSelected()
     {
-        isGrabbed = false;
+        if (hipSlotTransform != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawWireSphere(hipSlotTransform.position, snapDistance);
+        }
     }
 }
