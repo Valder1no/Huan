@@ -5,9 +5,10 @@ using System.Collections.Generic;
 public class SphereLauncher : MonoBehaviour
 {
     public GameObject cloneSpherePrefab;  // The prefab for the sphere (assigned in the Inspector)
-    public float launchForce = 10f;      // Force with which the sphere is launched
-    public float despawnTime = 5f;       // Time (in seconds) after which the sphere will despawn
+    //public float launchForce;      // Force with which the sphere is launched
+    public float despawnTime;       // Time (in seconds) after which the sphere will despawn
     public GameObject sigmaboy;
+
 
     private Camera mainCamera;
     private InputDevice rightController;
@@ -45,9 +46,9 @@ public class SphereLauncher : MonoBehaviour
             InitializeRightController(); // Re-initialize if the controller becomes invalid
         }
     }
-
     void LaunchSphere()
     {
+        float launchForce = Random.Range(9f, 14f);
         // Create the cloned sphere at a position in front of the camera
         Vector3 spawnPosition = sigmaboy.transform.position + sigmaboy.transform.forward * 0.1f;
         GameObject clonedSphere = Instantiate(cloneSpherePrefab, spawnPosition, Quaternion.identity);
@@ -60,19 +61,13 @@ public class SphereLauncher : MonoBehaviour
         }
 
         // Destroy the cloned sphere after the specified despawn time
-        Destroy(clonedSphere, despawnTime);
+         Destroy(clonedSphere, despawnTime = Random.Range(0.5f, 0.9f));
 
         void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.tag == "Ground");
-            {
-                Destroy(clonedSphere);
-            }
 
-            if (collision.gameObject.tag == "Obsticle");
-            {
                 Destroy(clonedSphere);
-            }
+
         }
     }
 }
