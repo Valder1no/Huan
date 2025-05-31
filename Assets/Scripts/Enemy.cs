@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 public class Projectile : MonoBehaviour
 {
-    public float speed = 40f;
+    public float speed = 10f;
     public int damage = 10;
 
     private Transform target;

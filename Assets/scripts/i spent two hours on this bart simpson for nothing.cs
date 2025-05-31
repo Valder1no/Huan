@@ -10,6 +10,7 @@ public class SphereLauncher : MonoBehaviour
     public GameObject sigmaboy;
 
     public GameObject flameEffectPrefab;
+    public GameObject smallFlameEffectPrefab;
 
     private Camera mainCamera;
     private InputDevice rightController;
@@ -63,8 +64,11 @@ public class SphereLauncher : MonoBehaviour
         // Fire visual effect
         Quaternion flameRotation = Quaternion.LookRotation(sigmaboy.transform.forward);
         GameObject flameEffect = Instantiate(flameEffectPrefab, spawnPosition, flameRotation);
+        GameObject nozzleFire = Instantiate(smallFlameEffectPrefab, spawnPosition, transform.rotation);
 
-        flameEffect.transform.parent = clonedSphere.transform; // Optional
+        flameEffect.transform.parent = clonedSphere.transform;
+        nozzleFire.transform.parent = sigmaboy.transform;
+        Destroy(nozzleFire, 0.2f);
         Destroy(flameEffect, 1.5f);
         Destroy(clonedSphere, despawnTime = Random.Range(0.5f, 0.9f));
     }

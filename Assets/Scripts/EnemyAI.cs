@@ -1,5 +1,3 @@
-using Unity.Collections;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,25 +8,26 @@ public class EnemyAiTutorial : MonoBehaviour
 
     public LayerMask whatIsGround, whatIsPlayer;
 
-    public float health = 20f; // Start with 20 health (i.e., 20 hits to die)
+    [Header("Enemy Stats")]
+    public float health = 10f;
+    public int projectileDamage = 2;
 
-    //Patroling
-    public Vector3 walkPoint;
-    bool walkPointSet;
+    // Patrolling
+    private Vector3 walkPoint;
+    private bool walkPointSet;
     public float walkPointRange;
 
-    //Attacking
-    public float timeBetweenAttacks;
-    bool alreadyAttacked;
+    // Attacking
+    public float timeBetweenAttacks = 1f;
+    private bool alreadyAttacked;
 
-    //States
+    // Detection
     public float sightRange, attackRange;
     public bool playerInSightRange, playerInAttackRange;
 
-    [Header("projectile stuff")]
+    [Header("Projectile Attack")]
     public GameObject projectilePrefab;
     public Transform attackPoint;
-
     [Range(0, 360)]
     public float angle;
     public float radius;
@@ -44,19 +43,12 @@ public class EnemyAiTutorial : MonoBehaviour
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, whatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, whatIsPlayer);
 
-        if (playerInSightRange)
+        if (playerInSightRange && HasLineOfSight())
         {
-            if (HasLineOfSight())
-            {
-                if (playerInAttackRange)
-                    AttackPlayer();
-                else
-                    ChasePlayer();
-            }
+            if (playerInAttackRange)
+                AttackPlayer();
             else
-            {
-                Patroling();
-            }
+                ChasePlayer();
         }
         else
         {
@@ -80,9 +72,7 @@ public class EnemyAiTutorial : MonoBehaviour
                 if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, distanceToPlayer))
                 {
                     if (hit.transform.CompareTag("Player"))
-                    {
                         return true;
-                    }
                 }
             }
         }
@@ -96,7 +86,7 @@ public class EnemyAiTutorial : MonoBehaviour
 
         if (walkPointSet)
         {
-            GetComponent<NavMeshAgent>().speed = 1.6f;
+            agent.speed = 1.6f;
             agent.SetDestination(walkPoint);
         }
 
@@ -113,7 +103,7 @@ public class EnemyAiTutorial : MonoBehaviour
 
         walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-        if (!Physics.Raycast(transform.position, (walkPoint - transform.position).normalized, out RaycastHit hit, Vector3.Distance(transform.position, walkPoint)))
+        if (!Physics.Raycast(transform.position, (walkPoint - transform.position).normalized, out _, Vector3.Distance(transform.position, walkPoint)))
         {
             walkPointSet = true;
         }
@@ -121,19 +111,19 @@ public class EnemyAiTutorial : MonoBehaviour
 
     private void ChasePlayer()
     {
-        GetComponent<NavMeshAgent>().speed = 4f;
+        agent.speed = 4f;
         agent.SetDestination(player.position);
     }
 
     private void AttackPlayer()
     {
-        agent.SetDestination(transform.position);
+        agent.SetDestination(transform.position); // Stop moving
         transform.LookAt(player);
 
         if (!alreadyAttacked)
         {
             GameObject projectile = Instantiate(projectilePrefab, attackPoint.position, Quaternion.identity);
-            projectile.GetComponent<Projectile>().SetTarget(player);
+            projectile.GetComponent<Projectile>()?.SetTarget(player);
 
             alreadyAttacked = true;
             Invoke(nameof(ResetAttack), timeBetweenAttacks);
@@ -145,26 +135,35 @@ public class EnemyAiTutorial : MonoBehaviour
         alreadyAttacked = false;
     }
 
-    public void TakeDamage(int damage)
+        private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Projectile"))
+        {
+            ChasePlayer();
+            OnHitByProjectile();
+        }
+    }
+
+    // ✅ Call this when hit by a projectile
+    public void OnHitByProjectile()
+    {
+        TakeDamage(projectileDamage);
+    }
+
+    private void TakeDamage(int damage)
     {
         health -= damage;
+        Debug.Log("Enemy taking damage: " + damage + " | Health now: " + health);
 
         if (health <= 0)
+        {
             Invoke(nameof(DestroyEnemy), 0.5f);
+        }
     }
 
     private void DestroyEnemy()
     {
+        Debug.Log("Enemy died");
         Destroy(gameObject);
-    }
-
-    // NEW: Detect hits from PlayerAttack-tagged GameObjects
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("PlayerAttack"))
-        {
-            TakeDamage(1); // Each hit reduces 1 health
-            Destroy(other.gameObject); // Optional: destroy the attack object
-        }
     }
 }
