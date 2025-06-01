@@ -1,95 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class VRMagnet : MonoBehaviour
+public class ObjectPuller : MonoBehaviour
 {
-    [Header("Magnet Settings")]
-    [SerializeField] private LayerMask attractableLayer = 1;
-    [SerializeField] private float magnetRadius = 5f;
-    [SerializeField] private float magnetForce = 10f;
-    [SerializeField] private float stopDistance = 0.5f;
-    [SerializeField] private bool useGravity = true;
+    [Header("Input Settings")]
+    public InputActionReference pullAction; // Reference to the button input
 
-    [Header("Visual Feedback")]
-    [SerializeField] private bool showDebugSphere = true;
-    [SerializeField] private Color debugColor = Color.red;
+    [Header("Pull Settings")]
+    public float pullRadius = 5f;
+    public float pullForce = 10f;
+    public LayerMask pullableLayer; // Only pull objects on this layer
 
-    private List<Rigidbody> attractedObjects = new List<Rigidbody>();
-
-    void Update()
+    private void OnEnable()
     {
-        AttractObjects();
+        if (pullAction != null)
+            pullAction.action.performed += OnPullPerformed;
     }
 
-    void AttractObjects()
+    private void OnDisable()
     {
-        // Find all objects in range on the specified layer
-        Collider[] objectsInRange = Physics.OverlapSphere(transform.position, magnetRadius, attractableLayer);
+        if (pullAction != null)
+            pullAction.action.performed -= OnPullPerformed;
+    }
 
-        // Clear the list and repopulate
-        attractedObjects.Clear();
-
-        foreach (Collider col in objectsInRange)
+    private void OnPullPerformed(InputAction.CallbackContext context)
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, pullRadius, pullableLayer);
+        foreach (Collider col in colliders)
         {
-            Rigidbody rb = col.GetComponent<Rigidbody>();
+            Rigidbody rb = col.attachedRigidbody;
             if (rb != null)
             {
-                attractedObjects.Add(rb);
-                PullObject(rb);
+                Vector3 direction = (transform.position - rb.position).normalized;
+                rb.AddForce(direction * pullForce, ForceMode.Impulse);
             }
         }
     }
 
-    void PullObject(Rigidbody targetRb)
+    private void OnDrawGizmosSelected()
     {
-        Vector3 direction = transform.position - targetRb.transform.position;
-        float distance = direction.magnitude;
-
-        // Stop pulling when close enough
-        if (distance <= stopDistance)
-        {
-            // Optional: Stop the object completely when it reaches the magnet
-            targetRb.velocity = Vector3.zero;
-            targetRb.angularVelocity = Vector3.zero;
-            return;
-        }
-
-        // Calculate force based on distance (stronger when closer)
-        float forceMagnitude = magnetForce / (distance * distance);
-        Vector3 force = direction.normalized * forceMagnitude;
-
-        // Apply the magnetic force
-        targetRb.AddForce(force, ForceMode.Force);
-
-        // Optionally disable gravity for attracted objects
-        if (!useGravity)
-        {
-            targetRb.useGravity = false;
-        }
-    }
-
-    // Visual debugging
-    void OnDrawGizmosSelected()
-    {
-        if (showDebugSphere)
-        {
-            Gizmos.color = debugColor;
-            Gizmos.DrawWireSphere(transform.position, magnetRadius);
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(transform.position, stopDistance);
-        }
-    }
-
-    // Optional: Method to toggle magnet on/off (useful for VR interactions)
-    public void ToggleMagnet()
-    {
-        enabled = !enabled;
-    }
-
-    public void SetMagnetActive(bool active)
-    {
-        enabled = active;
+        // Show the pull radius in the editor
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, pullRadius);
     }
 }
